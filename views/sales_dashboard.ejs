@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard - Placement Test System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Sales Dashboard</h2>
+            <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+        
+        <% if (success_msg) { %>
+            <div class="alert alert-success"><%= success_msg %></div>
+        <% } %>
+        <% if (error_msg) { %>
+            <div class="alert alert-danger"><%= error_msg %></div>
+        <% } %>
+
+        <!-- New Placement Test Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Create New Placement Test</h4>
+            </div>
+            <div class="card-body">
+                <form action="/sales/create-pt" method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="student_name" class="form-label">Student Name</label>
+                            <input type="text" class="form-control" id="student_name" name="student_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="student_age" class="form-label">Student Age</label>
+                            <input type="number" class="form-control" id="student_age" name="student_age" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="program" class="form-label">Program</label>
+                            <select class="form-select" id="program" name="program" required>
+                                <option value="">Select Program</option>
+                                <option value="Adult Communication">Adult Communication</option>
+                                <option value="Adult ESL">Adult ESL</option>
+                                <option value="Kids ESL">Kids ESL (Power Up)</option>
+                                <option value="IELTS">IELTS</option>
+                                <option value="Teens Class">Teens Class</option>
+                                <option value="Business English">Business English</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="scheduled_datetime" class="form-label">Scheduled Date & Time</label>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="date" class="form-control" id="scheduled_date" name="scheduled_date" required>
+                                </div>
+                                <div class="col">
+                                    <select class="form-select" id="scheduled_time" name="scheduled_time" required>
+                                        <option value="">Select Time</option>
+                                        <option value="09:00">9:00</option>
+                                        <option value="09:30">9:30</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="10:30">10:30</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="11:30">11:30</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="13:30">13:30</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="14:30">14:30</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="15:30">15:30</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="16:30">16:30</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sales_notes" class="form-label">Notes for Teacher (Optional)</label>
+                        <textarea class="form-control" id="sales_notes" name="sales_notes" rows="3" placeholder="Add any relevant information about the student that might help the teacher (e.g., learning goals, English background, special requirements)"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Test</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- List of Placement Tests -->
+        <div class="card">
+            <div class="card-header">
+                <h4>Your Placement Tests</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Program</th>
+                                <th>Scheduled Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (tests && tests.length > 0) { %>
+                                <% tests.forEach(test => { %>
+                                    <tr>
+                                        <td><%= test.student_name %></td>
+                                        <td><%= test.program %></td>
+                                        <td><%= new Date(test.scheduled_datetime).toLocaleString() %></td>
+                                        <td><%= test.status %></td>
+                                        <td>
+                                            <% if(test.status === 'Completed') { %>
+                                                <a href="/sales/view-result/<%= test._id %>" class="btn btn-sm btn-info">View Result</a>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5" class="text-center">No tests found</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
