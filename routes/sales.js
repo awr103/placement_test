@@ -76,4 +76,30 @@ router.get('/view-result/:id', ensureAuthenticated, ensureSales, async (req, res
     }
 });
 
+// Delete placement test
+router.post('/delete-pt/:id', ensureAuthenticated, ensureSales, async (req, res) => {
+    try {
+        const test = await PlacementTest.findById(req.params.id);
+        
+        if (!test) {
+            req.flash('error_msg', 'Test not found');
+            return res.redirect('/sales/dashboard');
+        }
+
+        // Only allow deletion if test is not completed
+        if (test.status === 'Completed') {
+            req.flash('error_msg', 'Cannot delete completed tests');
+            return res.redirect('/sales/dashboard');
+        }
+
+        await PlacementTest.findByIdAndDelete(req.params.id);
+        req.flash('success_msg', 'Placement test deleted successfully');
+        res.redirect('/sales/dashboard');
+    } catch (error) {
+        console.error('Error deleting test:', error);
+        req.flash('error_msg', 'Error deleting placement test');
+        res.redirect('/sales/dashboard');
+    }
+});
+
 module.exports = router; 
